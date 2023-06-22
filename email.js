@@ -3,20 +3,8 @@ const puppeteer = require('puppeteer');
 require('dotenv').config();
 const credentials = require('./credentials.json');
 
-async function getEmails(keyword, rows, i) {
+async function getEmails(keyword, rows, i, browser) {
     try {
-        const chromeOptions = {
-            headless: true,
-            defaultViewport: null,
-            args: [
-                "--incognito",
-                "--no-sandbox",
-                "--single-process",
-                "--no-zygote"
-            ],
-        };
-
-        const browser = await puppeteer.launch(chromeOptions);
         const url = rows[i].website;
         console.log(`Scraping URL ${url}`);
 
@@ -51,11 +39,10 @@ async function getEmails(keyword, rows, i) {
             console.log('Target tag not found.');
         }
 
+        await page.waitForTimeout(1000);
         await page.close();
     } catch (error) {
         console.error('An error occurred:', error);
-    } finally {
-        await browser.close();
     }
 }
 
