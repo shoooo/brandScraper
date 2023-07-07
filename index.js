@@ -2,6 +2,7 @@ const { GoogleSpreadsheet } = require('google-spreadsheet');
 const puppeteer = require('puppeteer');
 require('dotenv').config();
 const credentials = require('./credentials.json');
+const { getProductfromWebsite } = require('./api/gpt');
 
 async function scrape() {
     const doc = new GoogleSpreadsheet(process.env.SPREADSHEET_ID);
@@ -25,7 +26,7 @@ async function scrape() {
         const browser = await puppeteer.launch(chromeOptions);
         const page = await browser.newPage();
 
-        const rowNum = 3
+        const rowNum = 690
 
         for (let i = rowNum; i < rows.length; i++) {
             if (!rows[i].website) {
@@ -84,8 +85,8 @@ async function scrape() {
                         // });
 
                         // const textContent = await page.evaluate(() => document.body.textContent);
-                        
-                        
+
+
                         const company = await page.evaluate(() => {
                             const companyKeyword = '会社'
                             const companyRegex = new RegExp(`<tagname[^>]*>[^<]*${companyKeyword}[^<]*<\/tagname>`, 'i');
