@@ -3,12 +3,13 @@ const puppeteer = require('puppeteer');
 require('dotenv').config();
 const credentials = require('./credentials.json');
 const { searchWebsitefromName, scrapeCompany } = require('./dataScraper');
+const { getProductfromWebsite } = require('./api/gpt');
 
 async function scrape() {
     const doc = new GoogleSpreadsheet(process.env.SPREADSHEET_ID);
     await doc.useServiceAccountAuth(credentials);
     await doc.loadInfo();
-    const sheet = doc.sheetsByTitle['TEST'];
+    const sheet = doc.sheetsByTitle['MainSheet'];
     const rows = await sheet.getRows();
 
     const chromeOptions = {
@@ -26,7 +27,7 @@ async function scrape() {
     const page = await browser.newPage();
 
     try {
-        const rowNum = 7
+        const rowNum = 1240
 
         for (let i = rowNum; i < rows.length; i++) {
             if (!rows[i].website) {
@@ -74,6 +75,22 @@ async function scrape() {
                     }
                 } else {
                     console.log('Target tag not found.');
+                }
+            } else if (!rows[i].product) {
+                const websiteURL = rows[i].website;
+                await page.goto(websiteURL);
+                await page.waitForSelector('body');
+                const bodyContent = await page.evaluate(() => document.body.textContent);
+
+                if (bodyContent.length < 16000) {
+                    const product = await getProductfromWebsite(bodyContent)
+
+                    console.log(product)
+                    console.log(product.productName)
+
+                    rows[i].product = product.productName;
+                    rows[i].price = product.price;
+                    await rows[i].save();
                 }
             }
             // await page.waitForTimeout(1000);

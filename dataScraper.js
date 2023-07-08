@@ -1,5 +1,3 @@
-const { getProductfromWebsite } = require('./api/gpt');
-
 const searchWebsitefromName = async (page, name) => {
     await page.goto(`https://www.google.com/search?q=${encodeURIComponent(name)}+オンラインストア`);
     await page.waitForSelector('#search a');
