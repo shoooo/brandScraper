@@ -25,15 +25,14 @@ async function scrape() {
         const browser = await puppeteer.launch(chromeOptions);
         const page = await browser.newPage();
 
-        const rowNum = 3
-
+        const rowNum = 0
         for (let i = rowNum; i < rows.length; i++) {
             if (!rows[i].website) {
                 try {
                     const name = rows[i].brandname;
                     console.log(`Searching for name: ${name}`);
 
-                    await page.goto(`https://www.google.com/search?q=${encodeURIComponent(name)}`);
+                    await page.goto(`https://www.google.com/search?q=${encodeURIComponent(name)}+オンラインストア`);
                     await page.waitForSelector('#search a');
 
                     const topResult = await page.evaluate(() => {
@@ -84,15 +83,15 @@ async function scrape() {
                         // });
 
                         // const textContent = await page.evaluate(() => document.body.textContent);
-                        
-                        
-                        const company = await page.evaluate(() => {
-                            const companyKeyword = '会社'
-                            const companyRegex = new RegExp(`<tagname[^>]*>[^<]*${companyKeyword}[^<]*<\/tagname>`, 'i');
-                            const companyText = document.body.textContent;
-                            const match = companyText.match(companyRegex);
-                            return match ? match : null;
-                        });
+
+
+                        // const company = await page.evaluate(() => {
+                        //     const companyKeyword = '会社'
+                        //     const companyRegex = new RegExp(`<tagname[^>]*>[^<]*${companyKeyword}[^<]*<\/tagname>`, 'i');
+                        //     const companyText = document.body.textContent;
+                        //     const match = companyText.match(companyRegex);
+                        //     return match ? match : null;
+                        // });
 
                         if (email) {
                             rows[i].email = email;
@@ -102,14 +101,14 @@ async function scrape() {
                             console.log('No email found.');
                         }
 
-                        if (company) {
-                            const company = company[0].replace(/<\/?tagname[^>]*>/g, '');
-                            rows[i].company = company;
-                            await rows[i].save();
-                            console.log(`Company found: ${company}`);
-                        } else {
-                            console.log('No company found.');
-                        }
+                        // if (company) {
+                        //     const company = company[0].replace(/<\/?tagname[^>]*>/g, '');
+                        //     rows[i].company = company;
+                        //     await rows[i].save();
+                        //     console.log(`Company found: ${company}`);
+                        // } else {
+                        //     console.log('No company found.');
+                        // }
                     } else {
                         console.log('Target tag not found.');
                     }
