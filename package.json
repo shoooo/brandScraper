@@ -4,13 +4,20 @@
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
+<<<<<<< HEAD
     "dev": "nodemon index.js"
+=======
+    "dev": "nodemon index.js",
+    "brand": "nodemon brand.js",
+    "email": "nodemon email.js"
+>>>>>>> e799d50e00c6d26bdf52c99be19b3139226e6f71
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "dotenv": "^16.0.1",
     "google-spreadsheet": "^3.3.0",
+    "openai": "^3.3.0",
     "puppeteer": "^14.4.1"
   },
   "devDependencies": {
