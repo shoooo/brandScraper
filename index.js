@@ -12,7 +12,7 @@ async function scrape() {
     const sheet = doc.sheetsByTitle['MainSheet'];
     const rows = await sheet.getRows();
 
-    const chromeOptions = {
+    const puppeteerOptions = {
         headless: true,
         defaultViewport: null,
         args: [
@@ -23,16 +23,17 @@ async function scrape() {
         ],
     };
 
-    const browser = await puppeteer.launch(chromeOptions);
+    const browser = await puppeteer.launch(puppeteerOptions);
     const page = await browser.newPage();
 
     try {
-        const rowNum = 1240
+        // row number to start scraping from
+        const startRowNum = 1395
 
-        for (let i = rowNum; i < rows.length; i++) {
+        for (let i = startRowNum; i < rows.length; i++) {
             if (!rows[i].website) {
                 const name = rows[i].brandname;
-                console.log(`Searching for name: ${name}`);
+                console.log(`Searching website for: ${name}`);
                 const retrievedURL = await searchWebsitefromName(page, name);
 
                 if (retrievedURL) {
@@ -54,25 +55,33 @@ async function scrape() {
                 }, keyword.toLowerCase());
 
                 if (foundLink) {
-                    const scrapedCompany = await scrapeCompany(page, foundLink)
-                    console.log(scrapedCompany)
+                    const { email, companyName, instagramLink } = await scrapeCompany(page, foundLink);
 
-                    if (scrapedCompany.email) {
-                        rows[i].email = scrapedCompany.email;
+                    if (email) {
+                        rows[i].email = email;
                         await rows[i].save();
-                        console.log(`Email found: ${scrapedCompany.email}`);
+                        console.log(`Email found: ${email}`);
                     } else {
                         console.log('No email found.');
                     }
 
-                    if (scrapedCompany.companyName) {
-                        const companyName = scrapedCompany.companyName[0].replace(/<\/?tagname[^>]*>/g, '');
+                    if (companyName) {
+                        // const companyName = companyName[0].replace(/<\/?tagname[^>]*>/g, '');
                         rows[i].company = companyName;
                         await rows[i].save();
                         console.log(`Company found: ${companyName}`);
                     } else {
                         console.log('No company found.');
                     }
+
+                    if (instagramLink) {
+                        rows[i].instagram = instagramLink;
+                        await rows[i].save();
+                        console.log(`Instagram found: ${instagramLink}`);
+                    } else {
+                        console.log('No Instagram found.');
+                    }
+
                 } else {
                     console.log('Target tag not found.');
                 }
@@ -82,6 +91,7 @@ async function scrape() {
                 await page.waitForSelector('body');
                 const bodyContent = await page.evaluate(() => document.body.textContent);
 
+                // OpenAI APIが処理できるトークン数の制限
                 if (bodyContent.length < 16000) {
                     const product = await getProductfromWebsite(bodyContent)
 

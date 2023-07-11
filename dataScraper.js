@@ -22,15 +22,25 @@ const scrapeCompany = async (page, foundLink) => {
 
     const companyName = await page.evaluate(() => {
         const companyKeyword = '会社'
-        const companyRegex = new RegExp(`<tagname[^>]*>[^<]*${companyKeyword}[^<]*<\/tagname>`, 'i');
-        const companyText = document.body.textContent;
-        const match = companyText.match(companyRegex);
+        // const companyRegex = new RegExp(`<tagname[^>]*>[^<]*${companyKeyword}[^<]*<\/tagname>`, 'i');
+        const match = document.body.innerText.includes(companyKeyword);
+        console.log(match)
         return match ? match : null;
     });
+
+    const instagramLink = await page.evaluate(() => {
+        const links = Array.from(document.querySelectorAll('a'));
+        const instagramLink = links.find((link) => {
+          const href = link.getAttribute('href');
+          return href && href.includes('instagram.com');
+        });
+        return instagramLink ? instagramLink.href : null;
+      });
 
     return company = {
         email: email,
         companyName: companyName,
+        instagramLink: instagramLink
     }
 }
 
