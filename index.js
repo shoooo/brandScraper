@@ -4,6 +4,7 @@ require('dotenv').config();
 const credentials = require('./credentials.json');
 const { searchWebsitefromName, scrapeCompany } = require('./dataScraper');
 const { getProductfromWebsite } = require('./api/gpt');
+const { detectECcart } = require('./api/detectECcart');
 
 async function scrape() {
     const doc = new GoogleSpreadsheet(process.env.SPREADSHEET_ID);
@@ -28,7 +29,7 @@ async function scrape() {
 
     try {
         // row number to start scraping from
-        const startRowNum = 1395
+        const startRowNum = 1650
 
         for (let i = startRowNum; i < rows.length; i++) {
             if (!rows[i].website) {
@@ -55,7 +56,10 @@ async function scrape() {
                 }, keyword.toLowerCase());
 
                 if (foundLink) {
+                    const pageContent = await page.content();
                     const { email, companyName, instagramLink } = await scrapeCompany(page, foundLink);
+                    const detectedCart = await detectECcart(url, pageContent);
+                    console.log(detectedCart)
 
                     if (email) {
                         rows[i].email = email;

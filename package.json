@@ -14,7 +14,9 @@
     "dotenv": "^16.0.1",
     "google-spreadsheet": "^3.3.0",
     "openai": "^3.3.0",
-    "puppeteer": "^14.4.1"
+    "puppeteer": "^14.4.1",
+    "wappalyzer": "^6.10.63",
+    "wappalyzer-core": "^6.10.63"
   },
   "devDependencies": {
     "nodemon": "^2.0.16"

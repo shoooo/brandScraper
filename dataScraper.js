@@ -20,13 +20,11 @@ const scrapeCompany = async (page, foundLink) => {
         return match ? match[0] : null;
     });
 
-    const companyName = await page.evaluate(() => {
-        const companyKeyword = '会社'
-        // const companyRegex = new RegExp(`<tagname[^>]*>[^<]*${companyKeyword}[^<]*<\/tagname>`, 'i');
-        const match = document.body.innerText.includes(companyKeyword);
-        console.log(match)
-        return match ? match : null;
-    });
+    // const companyName = await page.evaluate(() => {
+    //     const elements = Array.from(document.querySelectorAll('*'));
+    //     const found = elements.find((element) => element.innerText.includes("会社"));
+    //     return found ? found : null;
+    // });
 
     const instagramLink = await page.evaluate(() => {
         const links = Array.from(document.querySelectorAll('a'));
@@ -39,7 +37,7 @@ const scrapeCompany = async (page, foundLink) => {
 
     return company = {
         email: email,
-        companyName: companyName,
+        // companyName: companyName,
         instagramLink: instagramLink
     }
 }
