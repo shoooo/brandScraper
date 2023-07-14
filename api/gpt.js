@@ -12,7 +12,7 @@ const model = 'gpt-3.5-turbo-16k';
 const getProductfromWebsite = async (bodyContent) => {
         try {
             const prompt = `
-            与えられたウェブサイトのボディのコンテンツから、1つ人気の商品名とその価格を抽出して、フォーマットを"{productName,price}"で、JSON形式で出力せよ。
+            与えられたウェブサイトのボディのコンテンツから、1つの商品名とその価格を抽出して、フォーマットを"{productName,price}"で、JSON形式で出力してください。
             商品が見つからない場合は空欄で出力してください。
 
             #Body Content
@@ -27,8 +27,8 @@ const getProductfromWebsite = async (bodyContent) => {
             });
 
             const productJSON = response.data.choices[0].message.content
-            const product = JSON.parse(productJSON)
-            return product
+            // const product = JSON.parse(productJSON)
+            return productJSON
         } catch (error) {
             console.error('An error occurred:', error);
         }
