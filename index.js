@@ -61,31 +61,12 @@ async function scrape() {
                     // const detectedCart = await detectECcart(url, pageContent);
                     // console.log(detectedCart)
 
-                    if (email) {
-                        rows[i].email = email;
-                        await rows[i].save();
-                        console.log(`Email found: ${email}`);
-                    } else {
-                        console.log('No email found.');
-                    }
+                    rows[i].email = email || null;
+                    rows[i].company = companyName || null;
+                    rows[i].instagram = instagramLink || null;
+                    await rows[i].save();
 
-                    if (companyName) {
-                        // const companyName = companyName[0].replace(/<\/?tagname[^>]*>/g, '');
-                        rows[i].company = companyName;
-                        await rows[i].save();
-                        console.log(`Company found: ${companyName}`);
-                    } else {
-                        console.log('No company found.');
-                    }
-
-                    if (instagramLink) {
-                        rows[i].instagram = instagramLink;
-                        await rows[i].save();
-                        console.log(`Instagram found: ${instagramLink}`);
-                    } else {
-                        console.log('No Instagram found.');
-                    }
-
+                    console.log(rows[i])
                 } else {
                     console.log('Target tag not found.');
                 }
