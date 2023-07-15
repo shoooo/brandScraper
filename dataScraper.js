@@ -21,19 +21,20 @@ const scrapeCompany = async (page, foundLink) => {
     });
 
     // const companyName = await page.evaluate(() => {
-    //     const elements = Array.from(document.querySelectorAll('*'));
-    //     const found = elements.find((element) => element.innerText.includes("会社"));
-    //     return found ? found : null;
+    //     const links = Array.from(document.querySelectorAll('a'));
+    //     const foundName = links.find((link) => link.innerText.toLowerCase().includes("会社"));
+    //     return foundName ? foundName.href : null;
     // });
+    // console.log(companyName)
 
     const instagramLink = await page.evaluate(() => {
         const links = Array.from(document.querySelectorAll('a'));
         const instagramLink = links.find((link) => {
-          const href = link.getAttribute('href');
-          return href && href.includes('instagram.com');
+            const href = link.getAttribute('href');
+            return href && href.includes('instagram.com');
         });
         return instagramLink ? instagramLink.href : null;
-      });
+    });
 
     return company = {
         email: email,

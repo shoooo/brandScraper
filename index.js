@@ -29,7 +29,7 @@ async function scrape() {
 
     try {
         // row number to start scraping from
-        const startRowNum = 139
+        const startRowNum = 2
 
         for (let i = startRowNum; i < rows.length; i++) {
             if (!rows[i].website) {
@@ -66,7 +66,7 @@ async function scrape() {
                     rows[i].instagram = instagramLink || null;
                     await rows[i].save();
 
-                    console.log(rows[i])
+                    console.log(rows[i]._rowNumber)
                 } else {
                     console.log('Target tag not found.');
                 }
@@ -82,8 +82,8 @@ async function scrape() {
 
                     console.log(product)
 
-                    rows[i].product = product;
-                    // rows[i].price = product.price;
+                    rows[i].product = product.product;
+                    rows[i].price = product.price;
                     await rows[i].save();
                 }
             }
