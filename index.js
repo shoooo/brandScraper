@@ -3,7 +3,7 @@ const puppeteer = require('puppeteer');
 require('dotenv').config();
 const credentials = require('./credentials.json');
 const { searchWebsitefromName, scrapeCompany } = require('./dataScraper');
-const { getProductfromWebsite } = require('./api/gpt');
+const { getProductfromWebsite } = require('./api/scrapeProduct');
 // const { detectECcart } = require('./api/detectECcart');
 
 async function scrape() {
