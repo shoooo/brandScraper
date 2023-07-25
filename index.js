@@ -10,7 +10,7 @@ async function scrape() {
     const doc = new GoogleSpreadsheet(process.env.SPREADSHEET_ID);
     await doc.useServiceAccountAuth(credentials);
     await doc.loadInfo();
-    const sheet = doc.sheetsByTitle['お中元2'];
+    const sheet = doc.sheetsByTitle['TANP'];
     const rows = await sheet.getRows();
 
     const puppeteerOptions = {
@@ -29,23 +29,23 @@ async function scrape() {
 
     try {
         // row number to start scraping from
-        const startRowNum = 2
+        const startRowNum = 321
 
         for (let i = startRowNum; i < rows.length; i++) {
-            if (!rows[i].website) {
-                const name = rows[i].brandname;
+            if (!rows[i].ブランドURL) {
+                const name = rows[i].ブランド名;
                 console.log(`Searching website for: ${name}`);
                 const retrievedURL = await searchWebsitefromName(page, name);
 
                 if (retrievedURL) {
-                    rows[i].website = retrievedURL;
+                    rows[i].ブランドURL = retrievedURL;
                     await rows[i].save();
                     console.log(`URL retrieved: ${retrievedURL}`);
                 } else {
                     console.log('No search results found.');
                 }
-            } else if (!rows[i].email) {
-                const url = rows[i].website;
+            } else if (rows[i].ブランドURL != "確認中" && !rows[i].メール) {
+                const url = rows[i].ブランドURL;
                 await page.goto(url);
                 const keyword = '特定商'
 
@@ -61,17 +61,17 @@ async function scrape() {
                     // const detectedCart = await detectECcart(url, pageContent);
                     // console.log(detectedCart)
 
-                    rows[i].email = email || null;
-                    rows[i].company = companyName || null;
-                    rows[i].instagram = instagramLink || null;
+                    rows[i].メール = email || null;
+                    rows[i].会社名 = companyName || null;
+                    rows[i].Instagram = instagramLink || null;
                     await rows[i].save();
 
                     console.log(rows[i]._rowNumber)
                 } else {
                     console.log('Target tag not found.');
                 }
-            } else if (!rows[i].product) {
-                const websiteURL = rows[i].website;
+            } else if (rows[i].ブランドURL != "確認中" && !rows[i].ギフト商品) {
+                const websiteURL = rows[i].ブランドURL;
                 await page.goto(websiteURL);
                 await page.waitForSelector('body');
                 const bodyContent = await page.evaluate(() => document.body.textContent);
@@ -82,8 +82,7 @@ async function scrape() {
 
                     console.log(product)
 
-                    rows[i].product = product.product;
-                    rows[i].price = product.price;
+                    rows[i].ギフト商品 = product.product;
                     await rows[i].save();
                 }
             }
