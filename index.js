@@ -4,7 +4,7 @@ require('dotenv').config();
 const credentials = require('./credentials.json');
 const { searchWebsitefromName, scrapeCompany } = require('./dataScraper');
 const { getProductfromWebsite } = require('./api/scrapeProduct');
-// const { detectECcart } = require('./api/detectECcart');
+const { detectECcart } = require('./api/detectECcart');
 
 async function scrape() {
     const doc = new GoogleSpreadsheet(process.env.SPREADSHEET_ID);
@@ -29,7 +29,7 @@ async function scrape() {
 
     try {
         // row number to start scraping from
-        const startRowNum = 321
+        const startRowNum = 571
 
         for (let i = startRowNum; i < rows.length; i++) {
             if (!rows[i].ブランドURL) {
@@ -44,7 +44,7 @@ async function scrape() {
                 } else {
                     console.log('No search results found.');
                 }
-            } else if (rows[i].ブランドURL != "確認中" && !rows[i].メール) {
+            } else if (!rows[i].メール) {
                 const url = rows[i].ブランドURL;
                 await page.goto(url);
                 const keyword = '特定商'
@@ -56,22 +56,24 @@ async function scrape() {
                 }, keyword.toLowerCase());
 
                 if (foundLink) {
+                    console.log(`Searching details at: ${foundLink}`);
                     const { email, companyName, instagramLink } = await scrapeCompany(page, foundLink);
-                    // const pageContent = await page.content();
-                    // const detectedCart = await detectECcart(url, pageContent);
-                    // console.log(detectedCart)
+                    const detectedCart = await detectECcart(url);
+                    console.log("Cart detected: ", detectedCart)
 
                     rows[i].メール = email || null;
                     rows[i].会社名 = companyName || null;
                     rows[i].Instagram = instagramLink || null;
+                    rows[i].カート = detectedCart[0] || null;
                     await rows[i].save();
 
                     console.log(rows[i]._rowNumber)
                 } else {
-                    console.log('Target tag not found.');
+                    console.log('特定商 not found.');
                 }
-            } else if (rows[i].ブランドURL != "確認中" && !rows[i].ギフト商品) {
+            } else if (!rows[i].ギフト商品) {
                 const websiteURL = rows[i].ブランドURL;
+                console.log(`Searching products at: ${websiteURL}`);
                 await page.goto(websiteURL);
                 await page.waitForSelector('body');
                 const bodyContent = await page.evaluate(() => document.body.textContent);
@@ -84,6 +86,8 @@ async function scrape() {
 
                     rows[i].ギフト商品 = product.product;
                     await rows[i].save();
+                } else {
+                    console.log("Website too long!")
                 }
             }
             await page.waitForTimeout(1500);
