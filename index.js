@@ -29,7 +29,7 @@ async function scrape() {
 
     try {
         // row number to start scraping from
-        const startRowNum = 571
+        const startRowNum = 583 -1
 
         for (let i = startRowNum; i < rows.length; i++) {
             if (!rows[i].ブランドURL) {

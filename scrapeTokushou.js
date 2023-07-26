@@ -10,7 +10,6 @@ const searchWebsitefromName = async (page, name) => {
 
 const scrapeCompany = async (page, foundLink) => {
     await page.goto(foundLink);
-    console.log(`Navigating to matching link: ${foundLink}`);
     await page.waitForSelector('a');
 
     const email = await page.evaluate(() => {

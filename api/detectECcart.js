@@ -12,7 +12,7 @@ const detectECcart = async (url) => {
         }).map(filteredTech => filteredTech.name);
 
         if (detectedCart[0] != "Cart Functionality") {
-            return detectedCart[0]
+            return detectedCart
         }
     } catch (error) {
         console.error('An error occurred:', error);
