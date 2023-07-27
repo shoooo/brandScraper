@@ -2,11 +2,11 @@ const { GoogleSpreadsheet } = require('google-spreadsheet');
 const puppeteer = require('puppeteer');
 require('dotenv').config();
 const credentials = require('./credentials.json');
-const { searchWebsitefromName, scrapeCompany } = require('./dataScraper');
+const { searchWebsitefromName } = require('./scrapeTokushou');
 const { getProductfromWebsite } = require('./api/scrapeProduct');
 const { detectECcart } = require('./api/detectECcart');
 
-async function scrape() {
+const scrape = async () => {
     const doc = new GoogleSpreadsheet(process.env.SPREADSHEET_ID);
     await doc.useServiceAccountAuth(credentials);
     await doc.loadInfo();
@@ -29,7 +29,7 @@ async function scrape() {
 
     try {
         // row number to start scraping from
-        const startRowNum = 583 -1
+        const startRowNum = 775 - 1
 
         for (let i = startRowNum; i < rows.length; i++) {
             if (!rows[i].ブランドURL) {
@@ -64,7 +64,7 @@ async function scrape() {
                     rows[i].メール = email || null;
                     rows[i].会社名 = companyName || null;
                     rows[i].Instagram = instagramLink || null;
-                    rows[i].カート = detectedCart[0] || null;
+                    rows[i].カート = detectedCart || null;
                     await rows[i].save();
 
                     console.log(rows[i]._rowNumber)

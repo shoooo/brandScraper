@@ -1,7 +1,7 @@
 const Wappalyzer = require('wappalyzer')
 const wappalyzer = new Wappalyzer()
 
-// navigationをよく考えずに作ってしまったので、挙動テスト必要
+// navigationをよく考えずに作ってしまったので、挙動見ないと
 const detectECcart = async (url) => {
     try {
         await wappalyzer.init();
@@ -11,8 +11,12 @@ const detectECcart = async (url) => {
             return tech.categories.some(category => category.slug === 'ecommerce')
         }).map(filteredTech => filteredTech.name);
 
-        if (detectedCart[0] != "Cart Functionality") {
-            return detectedCart
+        console.log(detectedCart)
+
+        if (detectedCart[0] == "Cart Functionality") {
+            return null
+        } else {
+            return detectedCart[0]
         }
     } catch (error) {
         console.error('An error occurred:', error);
