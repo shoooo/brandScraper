@@ -2,7 +2,7 @@ const { GoogleSpreadsheet } = require('google-spreadsheet');
 const puppeteer = require('puppeteer');
 require('dotenv').config();
 const credentials = require('./credentials.json');
-const { searchWebsitefromName } = require('./scrapeTokushou');
+const { searchWebsitefromName, scrapeCompany } = require('./scrapeTokushou');
 const { getProductfromWebsite } = require('./api/scrapeProduct');
 const { detectECcart } = require('./api/detectECcart');
 
@@ -10,7 +10,7 @@ const scrape = async () => {
     const doc = new GoogleSpreadsheet(process.env.SPREADSHEET_ID);
     await doc.useServiceAccountAuth(credentials);
     await doc.loadInfo();
-    const sheet = doc.sheetsByTitle['TANP'];
+    const sheet = doc.sheetsByTitle[process.env.SHEET_TITLE];
     const rows = await sheet.getRows();
 
     const puppeteerOptions = {
@@ -27,11 +27,11 @@ const scrape = async () => {
     const browser = await puppeteer.launch(puppeteerOptions);
     const page = await browser.newPage();
 
-    try {
-        // row number to start scraping from
-        const startRowNum = 775 - 1
+    // row number to start scraping from
+    const startRowNum = 90 - 1
 
-        for (let i = startRowNum; i < rows.length; i++) {
+    for (let i = startRowNum; i < rows.length; i++) {
+        try {
             if (!rows[i].ブランドURL) {
                 const name = rows[i].ブランド名;
                 console.log(`Searching website for: ${name}`);
@@ -91,12 +91,11 @@ const scrape = async () => {
                 }
             }
             await page.waitForTimeout(1500);
+        } catch (error) {
+            console.error('An error occurred:', error);
         }
-    } catch (error) {
-        console.error('An error occurred:', error);
-    } finally {
-        await browser.close();
     }
+    await browser.close();
 }
 
 scrape()
