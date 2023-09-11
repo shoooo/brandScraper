@@ -30,7 +30,7 @@ const scrape = async () => {
     const page = await browser.newPage();
 
     // row number to start scraping from
-    const startRow = 1313
+    const startRow = 1330
     const startRowNum = startRow - 2
 
     for (let i = startRowNum; i < rows.length; i++) {

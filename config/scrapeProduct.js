@@ -52,7 +52,7 @@ const getProductfromWebsite = async (page, url) => {
 
             const product = response.data.choices[0].message.function_call.arguments
             const productJSON = JSON.parse(product);
-            return productJSON
+            return productJSON.product || null
         } else {
             console.log("Website too long!")
         }
