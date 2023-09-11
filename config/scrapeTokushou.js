@@ -9,28 +9,6 @@ const scrapeCompany = async (page, foundLink) => {
         return match ? match[0] : null;
     });
 
-    // const companyName = await page.evaluate(() => {
-    //     const bodyContent = document.body.textContent;
-    //     const foundName = bodyContent.find((bodyContent) => bodyContent.innerText.includes("会社"));
-    //     return foundName ? foundName : null;
-
-    //     for (const element of elements) {
-    //         if (element.textContent.includes(keyword)) {
-    //             return element.textContent;
-    //         }
-    //     }
-    //     return null;
-    // });
-
-    // const companyName = await page.evaluate(() => {
-    //     const regex = /会社[^A-Za-z0-9]+(.+?)(?:[^\p{Script=Hiragana}\p{Script=Katakana}\p{Script=Han}ァ-ヴーａ-ｚ０-９々〆〤]+)/u; // Regex to capture the company name
-    //     const textContent = document.body.textContent || '';
-    //     const match = textContent.match(regex);
-    //     return match ? match[1].trim() : null; // Extract and trim the matched company name
-    // });
-
-    // console.log(companyName)
-
     const instagramLink = await page.evaluate(() => {
         const links = Array.from(document.querySelectorAll('a'));
         const instagramLink = links.find((link) => {
