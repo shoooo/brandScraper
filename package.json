@@ -6,7 +6,8 @@
     "start": "node index.js",
     "dev": "nodemon index.js",
     "brand": "nodemon brand.js",
-    "email": "nodemon email.js"
+    "email": "nodemon email.js",
+    "giftee": "nodemon config/scrapeGifteeBrands.js"
   },
   "author": "",
   "license": "ISC",

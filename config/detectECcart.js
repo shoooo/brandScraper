@@ -7,17 +7,13 @@ const detectECcart = async (url) => {
         await wappalyzer.init();
         const site = await wappalyzer.open(url)
         const detectedTech = await site.analyze()
-        const detectedCart = detectedTech.technologies.filter(tech => {
+        const detectedCarts = detectedTech.technologies.filter(tech => {
             return tech.categories.some(category => category.slug === 'ecommerce')
         }).map(filteredTech => filteredTech.name);
 
-        console.log(detectedCart)
-
-        if (detectedCart[0] == "Cart Functionality") {
-            return null
-        } else {
-            return detectedCart[0]
-        }
+        const detectedCart = detectedCarts.filter(carts => carts !== "Cart Functionality");
+        console.log("Cart detected: ", detectedCart)
+        return detectedCart[0]
     } catch (error) {
         console.error('An error occurred:', error);
     }
