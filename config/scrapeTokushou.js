@@ -20,7 +20,6 @@ const scrapeCompany = async (page, foundLink) => {
 
     return company = {
         email: email,
-        // companyName: companyName,
         instagramLink: instagramLink
     }
 }
