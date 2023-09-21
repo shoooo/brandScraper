@@ -12,7 +12,6 @@ const detectECcart = async (url) => {
         }).map(filteredTech => filteredTech.name);
 
         const detectedCart = detectedCarts.filter(carts => carts !== "Cart Functionality");
-        console.log("Cart detected: ", detectedCart)
         return detectedCart[0]
     } catch (error) {
         console.error('An error occurred:', error);

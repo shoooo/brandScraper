@@ -30,7 +30,7 @@ const scrape = async () => {
     const page = await browser.newPage();
 
     // row number to start scraping from
-    const startRow = 1330
+    const startRow = 995
     const startRowNum = startRow - 2
 
     for (let i = startRowNum; i < rows.length; i++) {
@@ -46,7 +46,7 @@ const scrape = async () => {
                 const foundLink = await findTokusho(page, url)
 
                 if (foundLink) {
-                    console.log(`Scraping information for: ${rows[i].ブランド名}`);
+                    console.log(`Scraping information for: ${rows[i].ブランド名} on ${rows[i]._rowNumber}`);
                     const { email, companyName, instagramLink } = await scrapeCompany(page, foundLink);
                     const detectedCart = await detectECcart(url);
                     const product = await getProductfromWebsite(page, url)
@@ -57,10 +57,9 @@ const scrape = async () => {
                     rows[i].カート = detectedCart || null;
                     rows[i].ギフト商品 = product || null;
                     await rows[i].save();
-
                 }
             }
-            await page.waitForTimeout(2000);
+            await page.waitForTimeout(1000);
         } catch (error) {
             console.error('An error occurred:', error);
         }
